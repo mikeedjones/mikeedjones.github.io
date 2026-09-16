@@ -109,6 +109,10 @@ async function main(): Promise<void> {
   await buildIndex(posts);
 
   writeFileSync(path.join(OUT_DIR, "style.css"), readFileSync(path.join(ROOT, "style.css")));
+  writeFileSync(
+    path.join(OUT_DIR, "favicon.svg"),
+    readFileSync(path.join(ROOT, "assets", "favicon.svg"))
+  );
 
   console.log(`Built ${posts.length} post(s) to ${path.relative(ROOT, OUT_DIR)}/`);
 }
