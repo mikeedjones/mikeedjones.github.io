@@ -1,3 +1,7 @@
+:root {
+  --accent: #003399;
+}
+
 body {
   max-width: 40em;
   margin: 4em auto;
@@ -12,6 +16,7 @@ body {
 h1 {
   font-size: 1.6em;
   font-weight: normal;
+  color: var(--accent);
   margin-bottom: 0.2em;
 }
 
@@ -45,13 +50,29 @@ a {
 }
 
 a:hover {
-  border-bottom-color: #111;
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 footer {
   margin-top: 3em;
+  display: flex;
+  gap: 1em;
+}
+
+footer .icon {
+  display: inline-flex;
   color: #888;
-  font-size: 0.85em;
+  border-bottom: none;
+}
+
+footer .icon:hover {
+  color: var(--accent);
+}
+
+footer .icon svg {
+  width: 1.2em;
+  height: 1.2em;
 }
 
 article h1 {

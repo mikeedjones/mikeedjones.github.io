@@ -17,9 +17,15 @@ const CONTENT_DIR = path.join(ROOT, "content");
 const POSTS_DIR = path.join(CONTENT_DIR, "posts");
 const OUT_DIR = path.join(ROOT, "dist");
 const TEMPLATES_DIR = path.join(ROOT, "templates");
+const ICONS_DIR = path.join(ROOT, "assets", "icons");
 
 const env = new nunjucks.Environment(new nunjucks.FileSystemLoader(TEMPLATES_DIR), {
   autoescape: true,
+});
+
+env.addGlobal("icons", {
+  github: readFileSync(path.join(ICONS_DIR, "github.svg"), "utf8"),
+  linkedin: readFileSync(path.join(ICONS_DIR, "linkedin.svg"), "utf8"),
 });
 
 interface PostMeta {
