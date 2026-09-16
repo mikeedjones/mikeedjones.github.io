@@ -1,0 +1,12 @@
+{% extends "page.html" %}
+
+{% block body %}
+{{ content | safe }}
+
+<h2>Writing</h2>
+<ul>
+{% for post in posts %}
+  <li><time datetime="{{ post.date }}">{{ post.date }}</time> — <a href="posts/{{ post.slug }}.html">{{ post.title }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
