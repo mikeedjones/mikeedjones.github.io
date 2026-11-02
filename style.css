@@ -90,7 +90,7 @@ a:hover {
     line-height: 1.6;
     color: #fff;
     background: var(--accent);
-    margin: 0.4em 0 0.2em calc(-1 * var(--pad));
+    margin: 0.4em 0 0.4em calc(-1 * var(--pad));
     padding-left: var(--pad);
     /* (100vw - 100%) / 2 is the space right of the text column. When the
      fade does not fit in it, end the solid bar early by the difference,
