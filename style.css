@@ -1,89 +1,267 @@
+/* The look follows the CV: Roboto, a soft blue, blue section bars
+   and a blue date column. Post text stays in a serif for long reading. */
+
 :root {
-  --accent: #003399;
+    --accent: #4169b4;
+    --text: #333;
+    --muted: #8a8a8a;
+    --sans: "Roboto", "Helvetica Neue", Arial, sans-serif;
+    --serif: Georgia, "Times New Roman", serif;
+    --gutter: 1.25rem; /* the side padding of the page */
 }
 
 body {
-  max-width: 40em;
-  margin: 4em auto;
-  padding: 0 1.2em;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 18px;
-  line-height: 1.5;
-  color: #111;
-  background: #fff;
-}
-
-h1 {
-  font-size: 1.6em;
-  font-weight: normal;
-  color: var(--accent);
-  margin-bottom: 0.2em;
-}
-
-.bio {
-  color: #555;
-  margin-bottom: 2.5em;
-}
-
-h2 {
-  font-size: 1.1em;
-  font-weight: normal;
-  color: #888;
-  margin-top: 2.5em;
-  margin-bottom: 0.8em;
-}
-
-h2 + ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-h2 + ul li {
-  margin-bottom: 0.6em;
+    max-width: 42em;
+    margin: 3em auto;
+    padding: 0 var(--gutter);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text);
+    background: #fff;
 }
 
 a {
-  color: #111;
-  text-decoration: none;
-  border-bottom: 1px solid #ccc;
+    color: var(--accent);
+    text-decoration: none;
 }
 
 a:hover {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
+    text-decoration: underline;
 }
 
+/* Masthead: "Michael" light, "Jones" bold blue, then the contact row. */
+
+.masthead h1 {
+    font-size: 3.2em;
+    font-weight: 300;
+    line-height: 1.1;
+    color: #444;
+    margin: 0;
+}
+
+.masthead h1 strong {
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3em 0;
+    margin-top: 0.6em;
+    font-size: 0.9em;
+}
+
+.contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+}
+
+.contact a + a::before {
+    content: "|";
+    color: var(--text);
+    margin: 0 0.75em;
+}
+
+.contact svg {
+    width: 1em;
+    height: 1em;
+}
+
+.bio {
+    margin-top: 1em;
+}
+
+/* Section bars. The solid bar runs from just left of the text column
+   (so the heading text lines up with the text below it) to the right
+   edge of the text column. There it dissolves into Ben-Day dots, as in
+   a Lichtenstein print. */
+
+.list h2 {
+    --pad: 0.4em;
+    --grid: 0.4em; /* distance between dot centres */
+    --fade: 4.8em; /* width of the dot fade */
+    position: relative;
+    isolation: isolate;
+    font-size: 1.6em;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #fff;
+    background: var(--accent);
+    margin: 0.4em 0 0.2em calc(-1 * var(--pad));
+    padding-left: var(--pad);
+    /* (100vw - 100%) / 2 is the space right of the text column. When the
+     fade does not fit in it, end the solid bar early by the difference,
+     so the dots stay on the screen. The 0.5em covers a scrollbar. */
+    margin-right: max(0px, calc(var(--fade) + 0.5em - (100vw - 100%) / 2));
+}
+
+/* On a narrow screen, the only space beside the text is the gutter.
+   There the bar fills it: it starts at the left edge of the window, and
+   the fade ends at the right edge. 47.125em is the body width (42em at
+   17px) plus both gutters, in 16px media query ems. */
+@media (max-width: 47.125em) {
+    .list h2 {
+        margin-left: calc(-1 * var(--gutter));
+        padding-left: var(--gutter);
+        margin-right: calc(var(--fade) - var(--gutter));
+    }
+}
+
+/* The dot fade, as a classic CSS halftone, so the dots shrink smoothly
+   with no band edges to cut them:
+   1. ::after holds two soft dot fields (dark centre, white edge), the
+      second offset by half a cell for a staggered print grid. "darken"
+      keeps the nearer dot. A grey ramp, multiplied on top, makes the
+      field darker on the left and lighter on the right.
+   2. contrast() then turns each pixel dark or light. The dark areas
+      are the dots, and the ramp sets how big they are.
+   3. "lighten" over the blue ::before turns dark to blue and keeps
+      white as white.
+   The dots are fixed to the window, not to the page, so the bar slides
+   over a dot field that does not move when you scroll. */
+
+.list h2::before,
+.list h2::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    width: var(--fade);
+}
+
+.list h2::before {
+    background: var(--accent);
+}
+
+.list h2::after {
+    --dot: radial-gradient(closest-side, #888, #fff);
+    background:
+        linear-gradient(to right, #808080, #fff),
+        var(--dot) 0 0 / var(--grid) var(--grid) fixed,
+        var(--dot) calc(var(--grid) / 2) calc(var(--grid) / 2) / var(--grid)
+            var(--grid) fixed;
+    background-blend-mode: multiply, darken, normal;
+    filter: contrast(25);
+    mix-blend-mode: lighten;
+}
+
+.entries {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.entry {
+    display: grid;
+    grid-template-columns: 5.5em minmax(0, 1fr);
+    gap: 0 1em;
+    margin-bottom: 0.9em;
+}
+
+.entry time {
+    color: var(--accent);
+    font-size: 1.05em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.entry-body {
+    font-size: 1.05em;
+    line-height: 1.4;
+}
+
+.entry-title {
+    color: var(--text);
+}
+
+.entry-title:hover {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.entry-title.external::after {
+    content: "\00a0\2197";
+    font-size: 0.75em;
+    color: #aaa;
+}
+
+.venue {
+    font-size: 0.78em;
+    color: var(--muted);
+}
+
+.tag {
+    font-size: 0.72em;
+    padding: 0 0.5em;
+    margin-left: 0.3em;
+    border: 1px solid #cdd7ec;
+    border-radius: 1em;
+    white-space: nowrap;
+}
+
+.tag:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    text-decoration: none;
+}
+
+@media (max-width: 34em) {
+    .masthead h1 {
+        font-size: 2.4em;
+    }
+
+    .list h2 {
+        font-size: 1.3em;
+    }
+
+    .entry {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Post pages. */
+
 footer {
-  margin-top: 3em;
-  display: flex;
-  gap: 1em;
+    margin-top: 3em;
+    display: flex;
+    gap: 1em;
 }
 
 footer .icon {
-  display: inline-flex;
-  color: #888;
-  border-bottom: none;
+    display: inline-flex;
+    color: var(--muted);
 }
 
 footer .icon:hover {
-  color: var(--accent);
+    color: var(--accent);
 }
 
 footer .icon svg {
-  width: 1.2em;
-  height: 1.2em;
-}
-
-article h1 {
-  margin-bottom: 0.1em;
-}
-
-article time {
-  color: #888;
-  font-size: 0.85em;
+    width: 1.2em;
+    height: 1.2em;
 }
 
 article {
-  margin-top: 1.5em;
+    margin-top: 1.5em;
+    font-family: var(--serif);
+    font-size: 1.05em;
+}
+
+article h1 {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 2.2em;
+    line-height: 1.15;
+    margin-bottom: 0.1em;
+}
+
+article time {
+    font-family: var(--sans);
+    color: var(--accent);
+    font-size: 0.85em;
 }

@@ -1,12 +1,40 @@
 {% extends "page.html" %}
 
 {% block body %}
-{{ content | safe }}
+{% set names = title.split(" ") %}
+<header class="masthead">
+  <h1>{{ names.slice(0, -1).join(" ") }} <strong>{{ names | last }}</strong></h1>
+  {%- if contact | length %}
+  <nav class="contact">
+    {%- for link in contact %}
+    <a href="{{ link.url }}">{{ icons[link.icon] | safe }}<span>{{ link.label }}</span></a>
+    {%- endfor %}
+  </nav>
+  {%- endif %}
+</header>
 
-<h2>Writing</h2>
-<ul>
-{% for post in posts %}
-  <li><time datetime="{{ post.date }}">{{ post.date }}</time> — <a href="posts/{{ post.slug }}.html">{{ post.title }}</a></li>
+<div class="bio">
+{{ content | safe }}
+</div>
+
+{% for section in sections %}
+<section class="list">
+<h2>{{ section.heading }}</h2>
+<ol class="entries">
+{% for item in section.items %}
+  <li class="entry">
+    <time datetime="{{ item.date }}">{{ item.date | formatDate(false) }}</time>
+    <div class="entry-body">
+      <a class="entry-title{% if item.external %} external{% endif %}" href="{{ item.href }}">{{ item.title }}</a>
+      {%- if item.venue %} <span class="venue">{{ item.venue }}</span>{% endif %}
+      {%- for link in item.links %} <a class="tag" href="{{ link.url }}">{{ link.label }}</a>{% endfor %}
+    </div>
+  </li>
 {% endfor %}
-</ul>
+</ol>
+</section>
+{% endfor %}
 {% endblock %}
+
+{# The contact row in the masthead replaces the footer icons. #}
+{% block footer %}{% endblock %}

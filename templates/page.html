@@ -4,15 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <link rel="stylesheet" href="{{ root }}style.css">
   <link rel="icon" href="{{ root }}favicon.svg" type="image/svg+xml">
 </head>
 <body>
 {% block body %}{% endblock %}
 
+{% block footer %}
 <footer>
   <a href="https://github.com/mikeedjones" aria-label="GitHub" class="icon">{{ icons.github | safe }}</a>
   <a href="https://www.linkedin.com/in/medjones91/" aria-label="LinkedIn" class="icon">{{ icons.linkedin | safe }}</a>
 </footer>
+{% endblock %}
 </body>
 </html>
