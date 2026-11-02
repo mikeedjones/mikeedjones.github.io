@@ -1,8 +1,8 @@
-/* The look follows the CV: Roboto, a soft blue, blue section bars
+/* The look follows the CV: Roboto, Everton blue, blue section bars
    and a blue date column. Post text stays in a serif for long reading. */
 
 :root {
-    --accent: #4169b4;
+    --accent: #003399; /* Everton blue, as in the favicon */
     --text: #333;
     --muted: #8a8a8a;
     --sans: "Roboto", "Helvetica Neue", Arial, sans-serif;
@@ -198,7 +198,7 @@ a:hover {
     font-size: 0.72em;
     padding: 0 0.5em;
     margin-left: 0.3em;
-    border: 1px solid #cdd7ec;
+    border: 1px solid #ccd6eb;
     border-radius: 1em;
     white-space: nowrap;
 }
