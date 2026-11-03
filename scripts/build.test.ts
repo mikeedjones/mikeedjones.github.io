@@ -59,7 +59,7 @@ describe("sectionKey", () => {
   });
 
   test("rejects an unknown section and names the allowed ones", () => {
-    assert.throws(() => sectionKey("talks", "f.md"), /must be one of writing, research/);
+    assert.throws(() => sectionKey("talks", "f.md"), /must be one of projects, writing, research/);
   });
 });
 
