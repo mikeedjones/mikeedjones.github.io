@@ -90,7 +90,7 @@ a:hover {
     line-height: 1.6;
     color: #fff;
     background: var(--accent);
-    margin: 0.4em 0 0.4em calc(-1 * var(--pad));
+    margin: 0.4em 0 0 calc(-1 * var(--pad));
     padding-left: var(--pad);
     /* (100vw - 100%) / 2 is the space right of the text column. When the
      fade does not fit in it, end the solid bar early by the difference,
@@ -118,10 +118,18 @@ a:hover {
       field darker on the left and lighter on the right.
    2. contrast() then turns each pixel dark or light. The dark areas
       are the dots, and the ramp sets how big they are.
-   3. "lighten" over the blue ::before turns dark to blue and keeps
-      white as white.
+   3. "screen" over the ::before colour turns dark to that colour and
+      keeps white as white. A part-dark pixel gets the same part of
+      the colour, so a light bar shows the same dot shapes as a dark
+      bar. ("lighten" made the dots look bigger on a light bar.)
    The dots are fixed to the window, not to the page, so the bar slides
-   over a dot field that does not move when you scroll. */
+   over a dot field that does not move when you scroll.
+   The section bars and the entry hover highlight share these rules.
+   Each one sets --bar (the colour), --grid and --fade. */
+
+.list h2 {
+    --bar: var(--accent);
+}
 
 .list h2::before,
 .list h2::after {
@@ -133,11 +141,13 @@ a:hover {
     width: var(--fade);
 }
 
-.list h2::before {
-    background: var(--accent);
+.list h2::before,
+.entry:is(:hover, :focus-within)::before {
+    background: var(--bar);
 }
 
-.list h2::after {
+.list h2::after,
+.entry:is(:hover, :focus-within)::after {
     --dot: radial-gradient(closest-side, #888, #fff);
     background:
         linear-gradient(to right, #808080, #fff),
@@ -146,7 +156,7 @@ a:hover {
             var(--grid) fixed;
     background-blend-mode: multiply, darken, normal;
     filter: contrast(25);
-    mix-blend-mode: lighten;
+    mix-blend-mode: screen;
 }
 
 .entries {
@@ -159,7 +169,72 @@ a:hover {
     display: grid;
     grid-template-columns: 5.5em minmax(0, 1fr);
     gap: 0 1em;
-    margin-bottom: 0.9em;
+    /* Padding, not margin, makes the space between entries, so the
+       entries touch. Then the highlights touch the section bar and each
+       other, and the dot field runs on with no gap. The first entry
+       gets the space that the section bar had below it. */
+    padding: 0.45em 0;
+}
+
+.entry:first-child {
+    padding-top: calc(0.4 * var(--h2));
+}
+
+/* The last entry also touches the next section bar. It gets the space
+   that the section bar had above it. */
+.entry:last-child {
+    padding-bottom: calc(0.4 * var(--h2));
+}
+
+.list + .list h2 {
+    margin-top: 0;
+}
+
+/* The hover highlight: a grey bar behind the entry that ends in the
+   same dot fade as the section bars. The bar is drawn by the pseudo
+   elements, so the entry keeps its size and the text does not move.
+   --h2 is the section heading size, so the dots match the heading dots
+   and line up with them on the fixed grid. --space is the space right
+   of the text column. --shift ends the bar early when the fade does not
+   fit in that space, as the section bars do. */
+
+.entry {
+    --bar: #eee;
+    --h2: 1.6em;
+    --grid: calc(0.4 * var(--h2));
+    --fade: calc(4.8 * var(--h2));
+    --pad: calc(0.4 * var(--h2));
+    --space: calc((100vw - min(42em, 100vw - 2 * var(--gutter))) / 2);
+    --shift: max(0px, calc(var(--fade) + 0.5 * var(--h2) - var(--space)));
+    position: relative;
+    isolation: isolate;
+}
+
+.entry:is(:hover, :focus-within)::before,
+.entry:is(:hover, :focus-within)::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    right: calc(var(--shift) - var(--fade));
+}
+
+.entry:is(:hover, :focus-within)::before {
+    left: calc(-1 * var(--pad));
+}
+
+.entry:is(:hover, :focus-within)::after {
+    width: var(--fade);
+}
+
+/* On a narrow screen, the highlight runs to the window edges, as the
+   section bars do. */
+@media (max-width: 47.125em) {
+    .entry {
+        --pad: var(--gutter);
+        --shift: calc(var(--fade) - var(--gutter));
+    }
 }
 
 .entry time {
@@ -178,15 +253,38 @@ a:hover {
     color: var(--text);
 }
 
-.entry-title:hover {
+/* The title turns blue whenever the highlight shows, so the two always
+   change together, also over an extra link. */
+.entry:is(:hover, :focus-within) .entry-title {
     color: var(--accent);
+}
+
+.entry-title:hover {
     text-decoration: none;
 }
 
-.entry-title.external::after {
-    content: "\00a0\2197";
-    font-size: 0.75em;
-    color: #aaa;
+/* The title link covers the whole hover area, so a click anywhere in
+   the highlight opens the entry. Its ::after has the same edges as the
+   highlight. .entry-body sets 1.05em, so the font size goes back to
+   the entry size here, and the em values match the highlight. */
+
+.entry-title::after {
+    content: "";
+    position: absolute;
+    font-size: calc(1em / 1.05);
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--pad));
+    right: calc(var(--shift) - var(--fade));
+}
+
+/* The venue and the extra links go on the line below the title. */
+
+.entry-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2em 0.5em;
 }
 
 .venue {
@@ -194,10 +292,12 @@ a:hover {
     color: var(--muted);
 }
 
+/* The extra links sit above the title link's hover area. */
 .tag {
+    position: relative;
+    z-index: 1;
     font-size: 0.72em;
     padding: 0 0.5em;
-    margin-left: 0.3em;
     border: 1px solid #ccd6eb;
     border-radius: 1em;
     white-space: nowrap;
@@ -220,6 +320,7 @@ a:hover {
     }
 
     .entry {
+        --h2: 1.3em;
         grid-template-columns: minmax(0, 1fr);
     }
 }

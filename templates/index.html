@@ -26,8 +26,12 @@
     <time datetime="{{ item.date }}">{{ item.date | formatDate(false) }}</time>
     <div class="entry-body">
       <a class="entry-title{% if item.external %} external{% endif %}" href="{{ item.href }}">{{ item.title }}</a>
-      {%- if item.venue %} <span class="venue">{{ item.venue }}</span>{% endif %}
-      {%- for link in item.links %} <a class="tag" href="{{ link.url }}">{{ link.label }}</a>{% endfor %}
+      {%- if item.venue or item.links | length %}
+      <div class="entry-meta">
+        {%- if item.venue %}<span class="venue">{{ item.venue }}</span>{% endif %}
+        {%- for link in item.links %}<a class="tag" href="{{ link.url }}">{{ link.label }}</a>{% endfor %}
+      </div>
+      {%- endif %}
     </div>
   </li>
 {% endfor %}
