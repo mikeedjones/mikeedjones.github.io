@@ -73,7 +73,7 @@ The fields are:
 
 - `title`, `url` — required. The title links to the URL.
 - `date` — required. Use `YYYY`, `YYYY-MM` or `YYYY-MM-DD`.
-- `section` — required. Use `writing` or `research`. The `SECTIONS`
+- `section` — required. Use `writing`, `research` or `projects`. The `SECTIONS`
   list in `scripts/build.ts` sets the section names and their order.
   Add a new section there.
 - `venue` — optional. This text shows in brackets after the title.
