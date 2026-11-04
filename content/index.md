@@ -9,4 +9,4 @@ contact:
     url: https://www.linkedin.com/in/medjones91/
 ---
 
-Software engineer at [Axle Energy](https://www.axleenergy.com/).
+Software engineer at [Axle Energy](https://www.axle.energy/).
